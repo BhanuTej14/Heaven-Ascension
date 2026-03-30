@@ -2,245 +2,121 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="theme-color" content="#120f27" />
-  <meta name="mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="Heavenly Ascension" />
-  <meta name="description" content="An installable cultivation idle RPG with breakthroughs, tribulations, dao injuries, missions, pills, beasts, and forging." />
-  <title>Heavenly Ascension: Cultivation Path</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Heavenly Ascension</title>
   <link rel="manifest" href="manifest.webmanifest" />
-  <link rel="apple-touch-icon" href="icons/icon-192.png" />
-  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
   <link rel="stylesheet" href="styles.css" />
+  <meta name="theme-color" content="#111827" />
 </head>
 <body>
-  <div class="app-shell">
-    <header class="topbar glass">
+  <div id="app">
+    <header class="topbar">
       <div>
-        <p class="eyebrow">Cultivation Idle RPG</p>
         <h1>Heavenly Ascension</h1>
+        <p class="subtitle">Cultivate, break through, survive tribulations, and ascend.</p>
       </div>
+
       <div class="topbar-actions">
         <button id="saveBtn" class="secondary-btn">Save</button>
         <button id="exportSaveBtn" class="secondary-btn">Export Save</button>
         <button id="importSaveBtn" class="secondary-btn">Import Save</button>
-        <input id="importSaveFile" type="file" accept="application/json" style="display:none">
+        <input id="importSaveFile" type="file" accept="application/json" style="display:none" />
+        <button id="installBtn" class="secondary-btn hidden-install">Install App</button>
         <span id="saveStatusText" class="save-status">Not saved yet</span>
         <button id="resetBtn" class="danger-btn">Reset</button>
       </div>
     </header>
 
     <main class="layout">
-      <section class="hero-panel glass">
-        <div class="sky"></div>
-        <div class="lightning-layer" id="lightningLayer"></div>
-        <div class="character-stage">
-          <div class="aura-ring aura-1"></div>
-          <div class="aura-ring aura-2"></div>
-          <div class="character meditation" id="character">
-            <div class="head"></div>
-            <div class="body"></div>
-            <div class="arm arm-left"></div>
-            <div class="arm arm-right"></div>
-            <div class="leg leg-left"></div>
-            <div class="leg leg-right"></div>
+      <section class="panel main-panel">
+        <div class="hero-card">
+          <div class="hero-left">
+            <div class="meditation-figure" id="meditationFigure">
+              <div class="body-glow"></div>
+              <div class="figure-head"></div>
+              <div class="figure-body"></div>
+              <div class="figure-seat"></div>
+              <div class="qi-aura" id="qiAura"></div>
+              <div class="tribulation-flash" id="tribulationFlash"></div>
+            </div>
           </div>
-          <div class="floating-particles" id="particles"></div>
+
+          <div class="hero-right">
+            <h2 id="realmName">Mortal Realm</h2>
+            <p id="levelName">Body Tempering</p>
+            <p id="stageName">Stage 1</p>
+
+            <div class="stats-grid">
+              <div class="stat-box"><span>Qi</span><strong id="qiValue">0</strong></div>
+              <div class="stat-box"><span>Needed</span><strong id="qiNeeded">100</strong></div>
+              <div class="stat-box"><span>Combat Power</span><strong id="powerValue">10</strong></div>
+              <div class="stat-box"><span>Dao Injury</span><strong id="injuryValue">0%</strong></div>
+              <div class="stat-box"><span>Spirit Stones</span><strong id="stonesValue">0</strong></div>
+              <div class="stat-box"><span>Beast Cores</span><strong id="coresValue">0</strong></div>
+            </div>
+
+            <div class="progress-wrap">
+              <div class="progress-label">
+                <span>Cultivation Progress</span>
+                <span id="progressText">0%</span>
+              </div>
+              <div class="progress-bar">
+                <div id="progressFill" class="progress-fill"></div>
+              </div>
+            </div>
+
+            <div class="action-grid">
+              <button id="meditateBtn" class="primary-btn">Meditate</button>
+              <button id="breakthroughBtn" class="primary-btn">Breakthrough</button>
+              <button id="healBtn" class="secondary-btn">Heal Dao Injury</button>
+              <button id="exploreBtn" class="secondary-btn">Explore</button>
+              <button id="fightBtn" class="secondary-btn">Fight</button>
+              <button id="missionBtn" class="secondary-btn">Sect Mission</button>
+              <button id="craftQiPillBtn" class="secondary-btn">Craft Qi Pill</button>
+              <button id="craftHealPillBtn" class="secondary-btn">Craft Healing Pill</button>
+              <button id="forgeBtn" class="secondary-btn">Forge Gear</button>
+              <button id="beastBtn" class="secondary-btn">Tame Beast</button>
+            </div>
+          </div>
         </div>
 
-        <div class="hero-info">
-          <div class="title-block">
-            <p class="eyebrow">Current Standing</p>
-            <h2 id="currentRealm">Mortal Realm</h2>
-            <h3 id="currentLevel">Body Tempering</h3>
-            <p id="levelDescription" class="description"></p>
+        <div class="log-panel">
+          <div class="panel-title-row">
+            <h3>System Log</h3>
           </div>
-
-          <div class="progress-card glass-soft">
-            <div class="row-between">
-              <span>Qi / EXP</span>
-              <strong id="qiText">0 / 100</strong>
-            </div>
-            <div class="progress-bar"><div id="qiBar" class="progress-fill"></div></div>
-            <div class="stat-grid mini">
-              <div><span>Meditation/sec</span><strong id="meditationRate">1</strong></div>
-              <div><span>Breakthrough Power</span><strong id="breakPower">0%</strong></div>
-              <div><span>Tribulation Resist</span><strong id="tribulationResist">0%</strong></div>
-              <div><span>Dao Injuries</span><strong id="injuryText">None</strong></div>
-            </div>
-          </div>
-
-          <div class="actions">
-            <button id="meditateBtn" class="primary-btn">Meditate</button>
-            <button id="breakthroughBtn" class="gold-btn">Breakthrough</button>
-            <button id="healBtn" class="secondary-btn">Heal Dao Injury</button>
-          </div>
-
-          <div class="resource-grid six">
-            <div class="resource-card glass-soft"><span>Insight</span><strong id="insightText">0</strong></div>
-            <div class="resource-card glass-soft"><span>Spirit Stones</span><strong id="stoneText">0</strong></div>
-            <div class="resource-card glass-soft"><span>Willpower</span><strong id="willText">0</strong></div>
-            <div class="resource-card glass-soft"><span>Tribulations Survived</span><strong id="tribulationText">0</strong></div>
-            <div class="resource-card glass-soft"><span>Herbs</span><strong id="herbText">0</strong></div>
-            <div class="resource-card glass-soft"><span>Beast Cores</span><strong id="coreText">0</strong></div>
-          </div>
+          <div id="logOutput" class="log-output"></div>
         </div>
       </section>
 
-      <section class="side-panel glass">
-        <div class="panel-block">
-          <div class="row-between">
-            <div>
-              <p class="eyebrow">Current World</p>
-              <h3>Current World Cultivation</h3>
-            </div>
-            <span id="worldBadge" class="badge">World 1</span>
+      <aside class="panel side-panel">
+        <div class="side-section">
+          <h3>Current World Path</h3>
+          <div id="cultivationList" class="cultivation-list"></div>
+        </div>
+
+        <div class="side-section">
+          <h3>Resources</h3>
+          <div class="resource-list">
+            <div class="resource-row"><span>Qi Pills</span><strong id="qiPillCount">0</strong></div>
+            <div class="resource-row"><span>Healing Pills</span><strong id="healPillCount">0</strong></div>
+            <div class="resource-row"><span>Weapon Tier</span><strong id="weaponTier">0</strong></div>
+            <div class="resource-row"><span>Armor Tier</span><strong id="armorTier">0</strong></div>
+            <div class="resource-row"><span>Relic Tier</span><strong id="relicTier">0</strong></div>
+            <div class="resource-row"><span>Spirit Beast Rank</span><strong id="beastRank">0</strong></div>
+            <div class="resource-row"><span>Win Streak</span><strong id="streakValue">0</strong></div>
           </div>
-          <div id="worldTrack" class="world-track"></div>
         </div>
 
-        <div class="panel-block">
-          <p class="eyebrow">Enhancements</p>
-          <h3>Growth Upgrades</h3>
-          <div class="upgrade-list" id="upgradeList"></div>
+        <div class="side-section">
+          <h3>Enemy</h3>
+          <div id="enemyPanel" class="enemy-panel">
+            <p>No enemy encountered yet.</p>
+          </div>
         </div>
-
-        <div class="panel-block">
-          <p class="eyebrow">Technique Log</p>
-          <h3>Recent Events</h3>
-          <div id="log" class="log"></div>
-        </div>
-      </section>
+      </aside>
     </main>
-
-    <section class="bottom-grid triple">
-      <div class="glass panel-block">
-        <p class="eyebrow">Next Threshold</p>
-        <div class="detail-grid">
-          <div><span>Required EXP</span><strong id="requiredExp">100</strong></div>
-          <div><span>Breakthrough Chance</span><strong id="chanceText">100%</strong></div>
-          <div><span>Regression Risk</span><strong id="riskText">0%</strong></div>
-          <div><span>Next Destination</span><strong id="nextDestination">Spirit Gathering</strong></div>
-        </div>
-      </div>
-
-      <div class="glass panel-block">
-        <p class="eyebrow">Combat Power</p>
-        <div class="detail-grid">
-          <div><span>Battle Power</span><strong id="battlePowerText">0</strong></div>
-          <div><span>Defense</span><strong id="defenseText">0</strong></div>
-          <div><span>Crit Chance</span><strong id="critText">0%</strong></div>
-          <div><span>Current Beast</span><strong id="beastNameText">None</strong></div>
-        </div>
-      </div>
-
-      <div class="glass panel-block">
-        <p class="eyebrow">Tribulation State</p>
-        <div class="detail-grid">
-          <div><span>Status</span><strong id="tribulationState">Dormant</strong></div>
-          <div><span>Danger</span><strong id="dangerText">Low</strong></div>
-          <div><span>Penalty on Failure</span><strong id="penaltyText">Dao injury + regression</strong></div>
-          <div><span>Recovery Benefit</span><strong id="recoveryText">Remove injury debuff</strong></div>
-        </div>
-      </div>
-    </section>
-
-    <section class="systems-grid">
-      <div class="glass panel-block">
-        <div class="row-between"><div><p class="eyebrow">Adventure</p><h3>Enemy Hunt</h3></div><span id="enemyBadge" class="badge">Idle</span></div>
-        <div class="combat-card">
-          <div><span>Target</span><strong id="enemyName">Forest Bandit</strong></div>
-          <div><span>Enemy Power</span><strong id="enemyPower">0</strong></div>
-          <div><span>Enemy HP</span><strong id="enemyHp">0 / 0</strong></div>
-        </div>
-        <div class="progress-bar combat-progress"><div id="enemyHpBar" class="progress-fill"></div></div>
-        <div class="actions compact">
-          <button id="exploreBtn" class="secondary-btn">Explore</button>
-          <button id="fightBtn" class="primary-btn">Attack</button>
-        </div>
-      </div>
-
-      <div class="glass panel-block">
-        <div class="row-between"><div><p class="eyebrow">Sect</p><h3>Missions</h3></div><span id="missionBadge" class="badge">Available</span></div>
-        <p id="missionName" class="description small"></p>
-        <div class="detail-grid">
-          <div><span>Reward</span><strong id="missionReward">-</strong></div>
-          <div><span>Difficulty</span><strong id="missionDifficulty">-</strong></div>
-        </div>
-        <div class="actions compact">
-          <button id="rerollMissionBtn" class="secondary-btn">New Mission</button>
-          <button id="missionBtn" class="gold-btn">Complete Mission</button>
-        </div>
-      </div>
-
-      <div class="glass panel-block">
-        <div class="row-between"><div><p class="eyebrow">Alchemy</p><h3>Pills</h3></div><span class="badge" id="pillCount">0 in stock</span></div>
-        <div class="detail-grid">
-          <div><span>Qi Recovery Pill</span><strong id="qiPillText">0</strong></div>
-          <div><span>Healing Pill</span><strong id="healPillText">0</strong></div>
-          <div><span>Forge Cost</span><strong>6 Herbs + 12 Stones</strong></div>
-          <div><span>Healing Cost</span><strong>8 Herbs + 18 Stones</strong></div>
-        </div>
-        <div class="actions compact">
-          <button id="craftQiPillBtn" class="secondary-btn">Craft Qi Pill</button>
-          <button id="craftHealPillBtn" class="secondary-btn">Craft Healing Pill</button>
-          <button id="useQiPillBtn" class="primary-btn">Use Qi Pill</button>
-          <button id="useHealPillBtn" class="gold-btn">Use Healing Pill</button>
-        </div>
-      </div>
-
-      <div class="glass panel-block">
-        <div class="row-between"><div><p class="eyebrow">Spirit Beast</p><h3>Taming Grounds</h3></div><span class="badge" id="beastRankText">None</span></div>
-        <p id="beastDesc" class="description small">A loyal spirit beast grants passive combat and meditation bonuses.</p>
-        <div class="detail-grid">
-          <div><span>Success Chance</span><strong id="beastChance">0%</strong></div>
-          <div><span>Required Cores</span><strong id="beastCost">0</strong></div>
-        </div>
-        <div class="actions compact">
-          <button id="huntCoresBtn" class="secondary-btn">Hunt Beast Cores</button>
-          <button id="tameBeastBtn" class="gold-btn">Tame Beast</button>
-        </div>
-      </div>
-
-      <div class="glass panel-block">
-        <div class="row-between"><div><p class="eyebrow">Equipment</p><h3>Forged Gear</h3></div><span class="badge" id="gearTierText">Common</span></div>
-        <div class="detail-grid">
-          <div><span>Weapon</span><strong id="weaponText">None</strong></div>
-          <div><span>Armor</span><strong id="armorText">None</strong></div>
-          <div><span>Relic</span><strong id="relicText">None</strong></div>
-          <div><span>Forge Cost</span><strong>20 Stones + 4 Cores</strong></div>
-        </div>
-        <div class="actions compact">
-          <button id="forgeWeaponBtn" class="secondary-btn">Forge Weapon</button>
-          <button id="forgeArmorBtn" class="secondary-btn">Forge Armor</button>
-          <button id="forgeRelicBtn" class="secondary-btn">Forge Relic</button>
-        </div>
-      </div>
-
-      <div class="glass panel-block">
-        <div class="row-between"><div><p class="eyebrow">Automation</p><h3>Long Session Hooks</h3></div><span class="badge">Active</span></div>
-        <div class="detail-grid">
-          <div><span>Auto Meditation</span><strong id="autoMeditationText">1/sec</strong></div>
-          <div><span>Offline Style Gains</span><strong id="offlineText">Resources only</strong></div>
-          <div><span>Combat Streak</span><strong id="streakText">0</strong></div>
-          <div><span>Mission Bonus</span><strong id="missionBonusText">0%</strong></div>
-        </div>
-      </div>
-    </section>
-  </div>
-
-  <div id="modal" class="modal hidden">
-    <div class="modal-card glass">
-      <p class="eyebrow" id="modalEyebrow">Tribulation</p>
-      <h2 id="modalTitle">Heavenly Lightning Descends</h2>
-      <p id="modalBody"></p>
-      <button id="modalClose" class="primary-btn">Continue</button>
-    </div>
   </div>
 
   <script src="script.js"></script>
-  <script src="app-shell.js"></script>
 </body>
 </html>
